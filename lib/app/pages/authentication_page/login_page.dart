@@ -376,7 +376,7 @@ class _LoginPageState extends State<LoginPage> {
                           }, 
                           width: getSize().width, 
                           height: 52, 
-                          text: appText.license,
+                          text: appText.login, 
                           bgColor: isEmptyInputs ? greyCF : green77(), 
                           textColor: Colors.white, 
                           borderColor: Colors.transparent,
