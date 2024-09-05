@@ -22,14 +22,15 @@ import 'package:webinar/locator.dart';
 
 class FinancialPage extends StatefulWidget {
   static const String pageName = '/financial';
+
   const FinancialPage({super.key});
 
   @override
   State<FinancialPage> createState() => _FinancialPageState();
 }
 
-class _FinancialPageState extends State<FinancialPage>  with SingleTickerProviderStateMixin{
-
+class _FinancialPageState extends State<FinancialPage>
+    with SingleTickerProviderStateMixin {
   late TabController tabController;
   SaleModel? saleData;
   SummaryModel? summaryData;
@@ -40,7 +41,7 @@ class _FinancialPageState extends State<FinancialPage>  with SingleTickerProvide
   bool isLoadingOfflinePaymentData = true;
   bool isLoadingPayoutData = true;
   bool isLoadingSalesData = true;
- 
+
   bool isLoadingCharge = false;
 
   late StreamSubscription _sub;
@@ -49,38 +50,34 @@ class _FinancialPageState extends State<FinancialPage>  with SingleTickerProvide
   void initState() {
     super.initState();
 
-    if(locator<UserProvider>().profile?.roleName == PublicData.userRole){
+    if (locator<UserProvider>().profile?.roleName == PublicData.userRole) {
+      tabController = TabController(length: 2, vsync: this);
+    } else {
       tabController = TabController(length: 3, vsync: this);
-    }else{
-      tabController = TabController(length: 4, vsync: this);
     }
 
     getSummaryData();
     getOfflinePaymentData();
-    
-    if(locator<UserProvider>().profile?.roleName != PublicData.userRole){
+
+    if (locator<UserProvider>().profile?.roleName != PublicData.userRole) {
       getSalesData();
     }
     getPayoutData();
 
     initUniLinks();
-  } 
+  }
 
   Future<void> initUniLinks() async {
-    
     _sub = linkStream.listen((String? link) {
-      if(link != null){
-        
-        if(link == 'academyapp://payment-success'){
+      if (link != null) {
+        if (link == 'academyapp://payment-success') {
           getSummaryData();
           nextRoute(PaymentStatusPage.pageName, arguments: 'success');
-        }else if(link == 'academyapp://payment-failed'){
+        } else if (link == 'academyapp://payment-failed') {
           nextRoute(PaymentStatusPage.pageName, arguments: 'failed');
         }
-
       }
     }, onError: (err) {});
-    
   }
 
   @override
@@ -90,52 +87,48 @@ class _FinancialPageState extends State<FinancialPage>  with SingleTickerProvide
   }
 
   getSummaryData() async {
-
     setState(() {
       isLoadingSummaryData = true;
     });
-    
+
     summaryData = await FinancialService.getSummaryData();
-    
+
     setState(() {
       isLoadingSummaryData = false;
     });
   }
 
   getPayoutData() async {
-
     setState(() {
       isLoadingPayoutData = true;
     });
-    
+
     payoutData = await FinancialService.getPayoutData();
-    
+
     setState(() {
       isLoadingPayoutData = false;
     });
   }
 
   getSalesData() async {
-
     setState(() {
       isLoadingSalesData = true;
     });
-    
+
     saleData = await FinancialService.getSalesData();
-    
+
     setState(() {
       isLoadingSalesData = false;
     });
   }
 
   getOfflinePaymentData() async {
-
     setState(() {
       isLoadingOfflinePaymentData = true;
     });
-    
+
     offlinePayments = await FinancialService.getOfflinePayments();
-    
+
     setState(() {
       isLoadingOfflinePaymentData = false;
     });
@@ -143,92 +136,74 @@ class _FinancialPageState extends State<FinancialPage>  with SingleTickerProvide
 
   @override
   Widget build(BuildContext context) {
-
     return directionality(
-      child: Scaffold(
-
-        appBar: appbar(title: appText.financial),
-
-        body: Column(
-          children: [
-
-            tabBar(
-              (i){
-
-              }, 
-              tabController,
-              [
-                Tab(text: appText.summary, height: 32),
-                Tab(text: appText.offlinePayment, height: 32),
-                
-                if(locator<UserProvider>().profile?.roleName != PublicData.userRole)...{
-                  Tab(text: appText.sales, height: 32),
-                },
-
-                Tab(text: appText.payout, height: 32),
-              ]
-            ),
-
-            Expanded(
-              child: TabBarView(
-                physics: const BouncingScrollPhysics(),
-                controller: tabController,
-                children: [
-
-                  isLoadingSummaryData
-                  ? loading()
-                  : FinancialWidget.summaryPage(summaryData, getSummaryData, isLoadingCharge, () async {
-                      isLoadingCharge = true;
-                      setState(() {});
-
-                      String? link = await FinancialService.webLinkCharge();
-
-                      isLoadingCharge = false;
-                      setState(() {});
-
-                      if(link != null){
-                        String token = await AppData.getAccessToken();
-
-                        Map<String, String> headers = {
-                          "Authorization": "Bearer $token",
-                          "Content-Type" : "application/json", 
-                          'Accept' : 'application/json',
-                          'x-api-key' : Constants.apiKey,
-                          'x-locale' : locator<AppLanguage>().currentLanguage.toLowerCase(),
-                        };
-
-                        await launchUrlString(
-                          link,
-                          mode: LaunchMode.externalApplication,
-                          webViewConfiguration: WebViewConfiguration(
-                            headers: headers,
-                          )
-                        );
-
-                      }
-                    }),
-
-                  isLoadingOfflinePaymentData
-                  ? loading()
-                  : FinancialWidget.offlinePaymentPage(offlinePayments),
-
-                  if(locator<UserProvider>().profile?.roleName != PublicData.userRole)...{
-                    isLoadingSalesData
+        child: Scaffold(
+      appBar: appbar(title: appText.financial),
+      body: Column(
+        children: [
+          tabBar((i) {}, tabController, [
+            Tab(text: appText.summary, height: 32),
+            Tab(text: appText.offlinePayment, height: 32),
+            if (locator<UserProvider>().profile?.roleName !=
+                PublicData.userRole) ...{
+              Tab(text: appText.sales, height: 32),
+            },
+            // Tab(text: appText.payout, height: 32),
+          ]),
+          Expanded(
+            child: TabBarView(
+              physics: const BouncingScrollPhysics(),
+              controller: tabController,
+              children: [
+                isLoadingSummaryData
                     ? loading()
-                    : FinancialWidget.salesPage(saleData),
-                  },
+                    : FinancialWidget.summaryPage(
+                        summaryData, getSummaryData, isLoadingCharge, () async {
+                        isLoadingCharge = true;
+                        setState(() {});
 
-                  isLoadingPayoutData
-                  ? loading()
-                  : FinancialWidget.payoutPage(payoutData, getPayoutData),
+                        String? link = await FinancialService.webLinkCharge();
 
-                ]
-              )
-            )
+                        isLoadingCharge = false;
+                        setState(() {});
 
-          ],
-        ),
-      )
-    );
+                        if (link != null) {
+                          String token = await AppData.getAccessToken();
+
+                          Map<String, String> headers = {
+                            "Authorization": "Bearer $token",
+                            "Content-Type": "application/json",
+                            'Accept': 'application/json',
+                            'x-api-key': Constants.apiKey,
+                            'x-locale': locator<AppLanguage>()
+                                .currentLanguage
+                                .toLowerCase(),
+                          };
+
+                          await launchUrlString(link,
+                              mode: LaunchMode.externalApplication,
+                              webViewConfiguration: WebViewConfiguration(
+                                headers: headers,
+                              ));
+                        }
+                      }),
+                isLoadingOfflinePaymentData
+                    ? loading()
+                    : FinancialWidget.offlinePaymentPage(offlinePayments),
+                if (locator<UserProvider>().profile?.roleName !=
+                    PublicData.userRole) ...{
+                  isLoadingSalesData
+                      ? loading()
+                      : FinancialWidget.salesPage(saleData),
+                },
+                /*isLoadingPayoutData
+                    ? loading()
+                    : FinancialWidget.payoutPage(payoutData, getPayoutData),*/
+              ],
+            ),
+          )
+        ],
+      ),
+    ));
   }
 }
