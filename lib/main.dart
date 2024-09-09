@@ -70,6 +70,7 @@ import 'app/providers/page_provider.dart';
 import 'app/providers/providers_provider.dart';
 import 'app/providers/user_provider.dart';
 import 'common/common.dart';
+import 'firebase_options.dart';
 import 'locator.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -100,7 +101,9 @@ void main() async {
   await initializeDateFormatting();
   tz.initializeTimeZones();
 
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
     
   await setupFlutterNotifications();
   

@@ -74,15 +74,15 @@ class SettingWidget {
 
           space(14),
 
-          switchButton(
-            appText.joinNewsletter, 
-            newsletter, 
+          /*switchButton(
+            appText.joinNewsletter,
+            newsletter,
             (value) {
               onTapChangeNewsletter(value);
             }
           ),
 
-          space(150),
+          space(150),*/
 
         ],
       ),
