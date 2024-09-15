@@ -61,16 +61,16 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
 
-    /*if ((PublicData.apiConfigData?['register_method'] ?? '') == 'email') {
+    if ((PublicData.apiConfigData?['register_method'] ?? '') == 'email') {
       isPhoneNumber = false;
       otherRegisterMethod = 'email';
     } else {
       isPhoneNumber = true;
       otherRegisterMethod = 'phone';
-    }*/
+    }
 
-    isPhoneNumber = true;
-    otherRegisterMethod = 'phone';
+    // isPhoneNumber = true;
+    // otherRegisterMethod = 'phone';
 
     mailController.addListener(() {
       if ((mailController.text.trim().isNotEmpty) &&
@@ -189,7 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                         }),
                         space(0, width: 20),
                       },
-                      /*if (PublicData
+                      if (PublicData
                               .apiConfigData?['show_facebook_login_button'] ??
                           false) ...{
                         socialWidget(AppAssets.facebookSvg, () async {
@@ -230,14 +230,14 @@ class _LoginPageState extends State<LoginPage> {
                           } else {}
                           // }catch(e){}
                         }),
-                      }*/
+                      }
                     ],
                   ),
 
                   space(25),
 
                   // Other Register Method
-                  /*if (PublicData.apiConfigData?['showOtherRegisterMethod'] ==
+                  if (PublicData.apiConfigData?['showOtherRegisterMethod'] ==
                       '1') ...{
                     space(15),
                     Container(
@@ -269,7 +269,7 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         )),
                     space(15),
-                  },*/
+                  },
 
                   // input
                   Column(
