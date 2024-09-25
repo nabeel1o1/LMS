@@ -74,7 +74,8 @@ class FinancialWidget{
                   children: List.generate(summary.history?.length ??0, (index) {
                     return historyItem(
                       summary.history?[index].description ?? '', 
-                      timeStampToDateHour((summary.history?[index].createdAt ?? 0) * 1000), 
+                      // timeStampToDateHour((summary.history?[index].createdAt ?? 0) * 1000),
+                        summary.history?[index].createdAt ?? "0",
                       CurrencyUtils.calculator(summary.history?[index].amount), 
                       summary.history?[index].balanceType == 'addition' // addition | deduction
                     );

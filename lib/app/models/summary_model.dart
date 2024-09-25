@@ -35,7 +35,7 @@ class History {
   var registrationPackage;
   String? description;
   var amount;
-  int? createdAt;
+  String? createdAt;
 
   History(
       {this.type,
